@@ -2,6 +2,7 @@ within CFDModelica.Flow3D;
 partial model Room3D_CFDwall_base
   /*********** MEDIUM MODEL ************************************************************************/
   replaceable package Medium = CFDModelica.Media.Fluid.DryAir
+    constrainedby Modelica.Media.Interfaces.PartialMedium
     "|Media| Medium model";
   /*********** INLET AND OUTLETS *******************************************************************/
   parameter Boolean all_left = false
@@ -169,23 +170,23 @@ partial model Room3D_CFDwall_base
   CFDModelica.Interfaces.HeatPort heatPort[I,J,K]
     "matrix of heat port connectors, connected to each volume (heat sources)"
     annotation (Placement(transformation(extent={{80,-100},{100,-80}})));
-  CFDModelica.Interfaces.flangeA fluidPort_left[J,K](redeclare package Medium
-      = Medium) "matrix of fluid connectors, left wall"
+  CFDModelica.Interfaces.flangeA fluidPort_left[J,K](redeclare package Medium =
+        Medium) "matrix of fluid connectors, left wall"
     annotation (Placement(transformation(extent={{-100,-30},{-80,-10}})));
-  CFDModelica.Interfaces.flangeB fluidPort_right[J,K](redeclare package Medium
-      = Medium) "matrix of fluid connectors, right wall"
+  CFDModelica.Interfaces.flangeB fluidPort_right[J,K](redeclare package Medium =
+        Medium) "matrix of fluid connectors, right wall"
     annotation (Placement(transformation(extent={{80,-30},{100,-10}})));
-  CFDModelica.Interfaces.flangeA fluidPort_floor[I,J](redeclare package Medium
-      = Medium) "matrix of fluid connectors, floor wall"
+  CFDModelica.Interfaces.flangeA fluidPort_floor[I,J](redeclare package Medium =
+        Medium) "matrix of fluid connectors, floor wall"
     annotation (Placement(transformation(extent={{10,-100},{30,-80}})));
   CFDModelica.Interfaces.flangeB fluidPort_cei[I,J](redeclare package Medium =
         Medium) "matrix of fluid connectors, ceiling wall"
     annotation (Placement(transformation(extent={{10,80},{30,100}})));
-  CFDModelica.Interfaces.flangeA fluidPort_front[I,K](redeclare package Medium
-      = Medium) "matrix of fluid connectors, front wall"
+  CFDModelica.Interfaces.flangeA fluidPort_front[I,K](redeclare package Medium =
+        Medium) "matrix of fluid connectors, front wall"
     annotation (Placement(transformation(extent={{-80,-100},{-60,-80}})));
-  CFDModelica.Interfaces.flangeB fluidPort_rear[I,K](redeclare package Medium
-      = Medium) "matrix of fluid connectors, rear wall"
+  CFDModelica.Interfaces.flangeB fluidPort_rear[I,K](redeclare package Medium =
+        Medium) "matrix of fluid connectors, rear wall"
     annotation (Placement(transformation(extent={{80,60},{100,80}})));
   /***************** VARIABLES **********************************************************************/
   Modelica.SIunits.Mass Mtot "mass of air contained within the room";

@@ -207,6 +207,10 @@ partial model Room3D_CFDwall_base
         StateSelect.prefer) "pressures inside the volume";
   Modelica.SIunits.Mass m[I,J,K] "masses within the volume";
   Modelica.SIunits.SpecificEnergy e[I,J,K] "specific energy inside the volume";
+  Modelica.SIunits.MassFraction Xi[I + 2,J + 2, K + 2, Medium.nXi]
+    "Independent mass fractions inside the volumes and boundaries";
+  Modelica.SIunits.MassFraction Ci[I + 2,J + 2, K + 2, Medium.nC]
+    "Independent trace mass fractions inside the volumes and boundaries";
   Modelica.SIunits.Velocity Vx[I + 1,J + 2,K + 2](each start=Vxstart)
     "fluid velocities inside the volume and boundaries";
   Modelica.SIunits.Velocity Vy[I + 2,J + 1,K + 2](each start=Vystart)
@@ -297,8 +301,8 @@ protected
   Real Pb_bt_z[I,J];
   Real aB_bt_z[I,J];
 
-  /***************** VARIABLES FOR MASS PRESERVATION EQUATIONS *********************************************************************/
-  /***************** Diffusive conductances, Peclet Numbers, Mass Flows and A-coefficients *****************************************/
+  /***************** VARIABLES FOR MASS, ENERGY AND PARTIAL MASS PRESERVATION EQUATIONS ******************************/
+  /***************** Diffusive conductances, Peclet Numbers, Mass Flows and A-coefficients **************************/
 
   Real De_M[I,J,K];
   Real Dw_M[I,J,K];
@@ -328,6 +332,15 @@ protected
   Real aS_M[I,J,K];
   Real aN_M[I,J,K];
   Real aP_M[I,J,K];
+
+  Real aE_Xi[I,J,K];
+  Real aW_Xi[I,J,K];
+  Real aB_Xi[I,J,K];
+  Real aT_Xi[I,J,K];
+  Real aS_Xi[I,J,K];
+  Real aN_Xi[I,J,K];
+  Real aP_Xi[I,J,K];
+
   /***************** VARIABLES FOR x-MOMENTUM EQUATIONS ****************************************************************************/
   /***************** Diffusive conductances, Peclet Numbers, Mass Flows and A-coefficients *****************************************/
   Real De_x[I-1,J,K];

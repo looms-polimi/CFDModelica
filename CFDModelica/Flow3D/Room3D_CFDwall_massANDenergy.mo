@@ -113,6 +113,57 @@ equation
           1, k - 1] + Ft_M[i - 1, j - 1, k
            - 1] - Fb_M[i - 1, j - 1, k - 1]);
 
+        // terms of the partial mass preservation equations (Xi)
+        aE_Xi[i-1, j-1, k-1] = Xi[i, j, k]*max(-Fe_M[i-1, j-1, k-1], 0);
+        //Gli altri 6 sotto, stesso trattamento
+
+        aW_Xi[i - 1, j - 1, k - 1] = Dw_M[i - 1, j - 1, k - 1]*
+          CFDModelica.Functions.A((Medium.specificHeatCapacityCp(
+          Medium.ThermodynamicState(P[i - 1, j - 1, k - 1], T[i, j, k])))*Pw_M[
+          i - 1, j - 1, k - 1], intSchemeEnergy) + (
+          Medium.specificHeatCapacityCp(Medium.ThermodynamicState(P[i - 1, j -
+          1, k - 1], T[i, j, k])))*max(Fw_M[i - 1, j - 1, k - 1], 0);
+
+        aN_Xi[i - 1, j - 1, k - 1] = Dn_M[i - 1, j - 1, k - 1]*
+          CFDModelica.Functions.A((Medium.specificHeatCapacityCp(
+          Medium.ThermodynamicState(P[i - 1, j - 1, k - 1], T[i, j, k])))*Pn_M[
+          i - 1, j - 1, k - 1], intSchemeEnergy) + (
+          Medium.specificHeatCapacityCp(Medium.ThermodynamicState(P[i - 1, j -
+          1, k - 1], T[i, j, k])))*max(-Fn_M[i - 1, j - 1, k - 1], 0);
+
+        aS_Xi[i - 1, j - 1, k - 1] = Ds_M[i - 1, j - 1, k - 1]*
+          CFDModelica.Functions.A((Medium.specificHeatCapacityCp(
+          Medium.ThermodynamicState(P[i - 1, j - 1, k - 1], T[i, j, k])))*Ps_M[
+          i - 1, j - 1, k - 1], intSchemeEnergy) + (
+          Medium.specificHeatCapacityCp(Medium.ThermodynamicState(P[i - 1, j -
+          1, k - 1], T[i, j, k])))*max(Fs_M[i - 1, j - 1, k - 1], 0);
+
+        aT_Xi[i - 1, j - 1, k - 1] = Dt_M[i - 1, j - 1, k - 1]*
+          CFDModelica.Functions.A((Medium.specificHeatCapacityCp(
+          Medium.ThermodynamicState(P[i - 1, j - 1, k - 1], T[i, j, k])))*Pt_M[
+          i - 1, j - 1, k - 1], intSchemeEnergy) + (
+          Medium.specificHeatCapacityCp(Medium.ThermodynamicState(P[i - 1, j -
+          1, k - 1], T[i, j, k])))*max(-Ft_M[i - 1, j - 1, k - 1], 0);
+
+        aB_Xi[i - 1, j - 1, k - 1] = Db_M[i - 1, j - 1, k - 1]*
+          CFDModelica.Functions.A((Medium.specificHeatCapacityCp(
+          Medium.ThermodynamicState(P[i - 1, j - 1, k - 1], T[i, j, k])))*Pb_M[
+          i - 1, j - 1, k - 1], intSchemeEnergy) + (
+          Medium.specificHeatCapacityCp(Medium.ThermodynamicState(P[i - 1, j -
+          1, k - 1], T[i, j, k])))*max(Fb_M[i - 1, j - 1, k - 1], 0);
+
+        aP_Xi[i - 1, j - 1, k - 1] = aE_M[i - 1, j - 1,
+          k - 1] + aW_M[i - 1, j - 1, k -
+          1] + aN_M[i - 1, j - 1, k - 1] + aS_M[i - 1, j - 1,
+          k - 1] + aB_M[i - 1, j - 1, k -
+          1] + aT_M[i - 1, j - 1, k - 1] + (
+          Medium.specificHeatCapacityCp(Medium.ThermodynamicState(P[i - 1, j - 1,
+          k - 1], T[i, j, k])))*(Fe_M[i -
+          1, j - 1, k - 1] - Fw_M[i - 1, j - 1, k
+           - 1] + Fn_M[i - 1, j - 1, k - 1] - Fs_M[i - 1, j -
+          1, k - 1] + Ft_M[i - 1, j - 1, k
+           - 1] - Fb_M[i - 1, j - 1, k - 1]);
+
         // The PV=nRT relationship (valid for ideal gases) had ben linearised by P,T, obtaining:
         //rho[i,j,k] = rho_o + ComprCoeff*P[i-1,j-1,k-1] - ThermalExpCoeff*(T[i,j,k]-To);
         //rho[i,j,k] = if energy then Medium.density_pT(P[i-1,j-1,k-1],T[i,j,k]) else Medium.density_pT(P[i-1,j-1,k-1],Medium.T0);
@@ -163,6 +214,20 @@ equation
               + heatPort[i-1,j-1,k-1].Q_flow else 
               0;
          */
+
+         rho_o*dx[i-1]*dy[j-1]*dz[k-1]*der(Xi[i,j,k]) =
+            if energy then
+              - aP_Xi[i-1,j-1,k-1]*Xi[i,j,k]
+              + aE_M[i-1,j-1,k-1]*T[i+1,j,k]
+              + aW_M[i-1,j-1,k-1]*T[i-1,j,k]
+              + aN_M[i-1,j-1,k-1]*T[i,j+1,k]
+              + aS_M[i-1,j-1,k-1]*T[i,j-1,k]
+              + aT_M[i-1,j-1,k-1]*T[i,j,k+1]
+              + aB_M[i-1,j-1,k-1]*T[i,j,k-1]
+              + heatPort[i-1,j-1,k-1].Q_flow else
+              0;                              //etc.
+
+
 
          // thermal connectors
         heatPort[i - 1, j - 1, k - 1].T = T[i, j, k];
